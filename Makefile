@@ -1,3 +1,4 @@
+GO_IMAGE ?= golang:1.17
 VENDOR := vendor
 PKGS := $(shell go list ./... | grep -v /$(VENDOR)/)
 SRC = $(shell find . -type f -name '*.go' -not -path "./$(VENDOR)/*")
@@ -56,13 +57,26 @@ clean:
 	@echo "+ $@"
 	@rm -rf $(BUILDDIR)
 
-build: clean
+define BUILD
 	@echo "+ $@"
 	@docker run --rm -it \
-		-v $(CURDIR):/gopath/src/github.com/retr0h/go-gilt \
-		-w /gopath/src/github.com/retr0h/go-gilt \
-		tcnksm/gox:1.10.3 \
-		gox \
-			-ldflags="$(LDFLAGS)" \
-			-osarch="linux/amd64 darwin/amd64" \
-			-output="$(BUILDDIR)/{{.Dir}}_{{.OS}}_{{.Arch}}"
+		-v $(CURDIR):/usr/src/go-gilt:z \
+		-w /usr/src/go-gilt \
+		$(GO_IMAGE) \
+		env GOOS=$(GOOS) GOARCH=$(GOARCH) GO111MODULE=on make in-container-build
+endef
+
+build: clean build-linux-amd64 build-darwin-amd64
+
+build-linux-amd64: GOOS=linux GOARCH=amd64
+build-linux-amd64:
+	$(BUILD)
+
+build-darwin-amd64: GOOS=darwin GOARCH=amd64
+build-darwin-amd64:
+	$(BUILD)
+
+in-container-build:
+	go build -v \
+	-ldflags="$(LDFLAGS)" \
+	-o "$(BUILDDIR)/go-gilt_$$(go env GOOS)_$$(go env GOARCH)"
