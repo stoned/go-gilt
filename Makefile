@@ -1,9 +1,4 @@
 GO_IMAGE ?= golang:1.17
-VENDOR := vendor
-PKGS := $(shell go list ./... | grep -v /$(VENDOR)/)
-SRC = $(shell find . -type f -name '*.go' -not -path "./$(VENDOR)/*")
-$(if $(PKGS), , $(error "go list failed"))
-PKGS_DELIM := $(shell echo $(PKGS) | sed -e 's/ /,/g')
 GITCOMMIT ?= $(shell git rev-parse --short HEAD)
 $(if $(GITCOMMIT), , $(error "git rev-parse failed"))
 GITUNTRACKEDCHANGES := $(shell git status --porcelain --untracked-files=no)
@@ -30,28 +25,24 @@ bats:
 
 cover:
 	@echo "+ $@"
-	$(shell [ -e coverage.out ] && rm coverage.out)
-	@echo "mode: count" > coverage-all.out
-	@$(foreach pkg,$(PKGS),\
-		go test -tags=integration -coverprofile=coverage.out -covermode=count $(pkg);\
-		tail -n +2 coverage.out >> coverage-all.out;)
-	@go tool cover -html=coverage-all.out -o=coverage-all.html
+	@go test -tags=integration -coverprofile=coverage.out -covermode=count ./...
+	@go tool cover -html=coverage.out -o=coverage.html
 
 fmt:
 	@echo "+ $@"
-	@gofmt -s -l -w $(SRC)
+	@gofmt -s -l -w .
 
 fmtcheck:
 	@echo "+ $@"
-	@bash -c "diff -u <(echo -n) <(gofmt -d $(SRC))"
+	@bash -c "diff -u <(echo -n) <(gofmt -d .)"
 
 lint:
 	@echo "+ $@"
-	@echo $(PKGS) | xargs -L1 golint -set_exit_status
+	@golint -set_exit_status ./...
 
 vet:
 	@echo "+ $@"
-	@go vet $(PKGS)
+	@go vet ./...
 
 clean:
 	@echo "+ $@"
