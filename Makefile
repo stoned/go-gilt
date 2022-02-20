@@ -48,27 +48,18 @@ clean:
 	@echo "+ $@"
 	@rm -rf $(BUILDDIR)
 
-define BUILD
+build: clean
 	@echo "+ $@"
 	@docker run --rm -it \
 		--user $$(id -u) \
 		-v $(CURDIR):/usr/src/go-gilt:z \
 		-w /usr/src/go-gilt \
 		$(GO_IMAGE) \
-		env HOME=/tmp GOOS=$(GOOS) GOARCH=$(GOARCH) GO111MODULE=on make in-container-build
-endef
+		env HOME=/tmp make do-build
 
-build: clean build-linux-amd64 build-darwin-amd64
-
-build-linux-amd64: GOOS=linux GOARCH=amd64
-build-linux-amd64:
-	$(BUILD)
-
-build-darwin-amd64: GOOS=darwin GOARCH=amd64
-build-darwin-amd64:
-	$(BUILD)
-
-in-container-build:
-	go build -v \
-	-ldflags="$(LDFLAGS)" \
-	-o "$(BUILDDIR)/go-gilt_$$(go env GOOS)_$$(go env GOARCH)"
+do-build:
+	go install github.com/mitchellh/gox@latest
+	gox \
+		-ldflags="$(LDFLAGS)" \
+		-osarch="linux/amd64 darwin/amd64" \
+		-output="$(BUILDDIR)/{{.Dir}}_{{.OS}}_{{.Arch}}"
