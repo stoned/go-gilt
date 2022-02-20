@@ -60,10 +60,11 @@ clean:
 define BUILD
 	@echo "+ $@"
 	@docker run --rm -it \
+		--user $$(id -u) \
 		-v $(CURDIR):/usr/src/go-gilt:z \
 		-w /usr/src/go-gilt \
 		$(GO_IMAGE) \
-		env GOOS=$(GOOS) GOARCH=$(GOARCH) GO111MODULE=on make in-container-build
+		env HOME=/tmp GOOS=$(GOOS) GOARCH=$(GOARCH) GO111MODULE=on make in-container-build
 endef
 
 build: clean build-linux-amd64 build-darwin-amd64
