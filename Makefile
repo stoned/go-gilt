@@ -1,4 +1,5 @@
 GO_IMAGE ?= golang:1.17
+CONTAINER_ENGINE ?= docker
 GITCOMMIT ?= $(shell git rev-parse --short HEAD)
 $(if $(GITCOMMIT), , $(error "git rev-parse failed"))
 GITUNTRACKEDCHANGES := $(shell git status --porcelain --untracked-files=no)
@@ -50,8 +51,8 @@ clean:
 
 build: clean
 	@echo "+ $@"
-	@docker run --rm -it \
-		--user $$(id -u) \
+	@$(CONTAINER_ENGINE) run --rm -it \
+		$(if $(findstring docker,$(CONTAINER_ENGINE)),--user $$(id -u)) \
 		-v $(CURDIR):/usr/src/go-gilt:z \
 		-w /usr/src/go-gilt \
 		$(GO_IMAGE) \
