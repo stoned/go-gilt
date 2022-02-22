@@ -22,7 +22,6 @@ package util_test
 
 import (
 	"os"
-	"os/user"
 	"path"
 	"path/filepath"
 	"testing"
@@ -51,8 +50,9 @@ func TestExpandUserReturnsError(t *testing.T) {
 
 func TestExpandUser(t *testing.T) {
 	got, err := util.ExpandUser("~/foo/bar")
-	usr, _ := user.Current()
-	want := filepath.Join(usr.HomeDir, "foo", "bar")
+	home, homeError := os.UserHomeDir()
+	assert.NoError(t, homeError)
+	want := filepath.Join(home, "foo", "bar")
 
 	assert.Equal(t, want, got)
 	assert.NoError(t, err)

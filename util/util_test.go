@@ -22,7 +22,6 @@ package util
 
 import (
 	"errors"
-	"os/user"
 	"testing"
 
 	capturer "github.com/kami-zh/go-capturer"
@@ -52,11 +51,11 @@ func TestPrintErrorAndExit(t *testing.T) {
 }
 
 func TestExpandUserReturnsError(t *testing.T) {
-	originalCurrentUser := currentUser
-	currentUser = func() (*user.User, error) {
-		return nil, errors.New("Failed user.Current")
+	originalHomeDir := homeDir
+	homeDir = func() (string, error) {
+		return "", errors.New("Failed os.UserHomeDir")
 	}
-	defer func() { currentUser = originalCurrentUser }()
+	defer func() { homeDir = originalHomeDir }()
 
 	_, err := ExpandUser("~/foo/bar")
 	assert.Error(t, err)

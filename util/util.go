@@ -26,7 +26,6 @@ import (
 	"fmt"
 	"os"
 	"os/exec"
-	"os/user"
 	"path/filepath"
 	"strings"
 
@@ -37,8 +36,8 @@ import (
 var (
 	// osExit is mocked for tests.
 	osExit = os.Exit
-	// currentUser is mocked for tests.
-	currentUser = user.Current
+	// homeDir is mocked for tests.
+	homeDir = os.UserHomeDir
 )
 
 // PrintError formats and prints the provided string for error messages.
@@ -64,12 +63,12 @@ func ExpandUser(path string) (string, error) {
 		return path, nil
 	}
 
-	usr, err := currentUser()
+	home, err := homeDir()
 	if err != nil {
 		return "", err
 	}
 
-	return filepath.Join(usr.HomeDir, path[1:]), nil
+	return filepath.Join(home, path[1:]), nil
 }
 
 // RunCmd execute the provided command with args.
