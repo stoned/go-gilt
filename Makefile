@@ -1,5 +1,6 @@
 CMD := go-gilt
 GO_IMAGE ?= golang:1.17
+GOLANGCI_LINT_IMAGE ?= golangci/golangci-lint:v1.44.2
 CONTAINER_ENGINE ?= docker
 GITCOMMIT ?= $(shell git rev-parse --short HEAD)
 $(if $(GITCOMMIT), , $(error "git rev-parse failed"))
@@ -49,9 +50,10 @@ fmtcheck:
 	@echo "+ $@"
 	@$(CRUN) gofmt -d .
 
+lint: IMAGE=$(GOLANGCI_LINT_IMAGE)
 lint:
 	@echo "+ $@"
-	@golint -set_exit_status ./...
+	@$(CRUN) golangci-lint run -v
 
 vet:
 	@echo "+ $@"
