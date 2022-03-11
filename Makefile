@@ -1,3 +1,4 @@
+CMD := go-gilt
 GO_IMAGE ?= golang:1.17
 CONTAINER_ENGINE ?= docker
 GITCOMMIT ?= $(shell git rev-parse --short HEAD)
@@ -49,18 +50,31 @@ clean:
 	@echo "+ $@"
 	@rm -rf $(BUILDDIR)
 
-build: clean
-	@echo "+ $@"
+define BUILD
 	@$(CONTAINER_ENGINE) run --rm -it \
 		$(if $(findstring docker,$(CONTAINER_ENGINE)),--user $$(id -u)) \
 		-v $(CURDIR):/usr/src/go-gilt:z \
 		-w /usr/src/go-gilt \
+		--env HOME=/tmp \
+		--env GOOS=$(GOOS) \
+		--env GOARCH=$(GOARCH) \
 		$(GO_IMAGE) \
-		env HOME=/tmp make do-build
+		go build \
+			-ldflags="$(LDFLAGS)" \
+			-o "$(BUILDDIR)/$(CMD)_$(GOOS)_$(GOARCH)"
 
-do-build:
-	go install github.com/mitchellh/gox@latest
-	gox \
-		-ldflags="$(LDFLAGS)" \
-		-osarch="linux/amd64 darwin/amd64" \
-		-output="$(BUILDDIR)/{{.Dir}}_{{.OS}}_{{.Arch}}"
+endef
+
+build: clean build-linux-amd64 build-darwin-amd64
+
+build-linux-amd64: GOOS=linux
+build-linux-amd64: GOARCH=amd64
+build-linux-amd64:
+	@echo "+ $@"
+	$(BUILD)
+
+build-darwin-amd64: GOOS=darwin
+build-darwin-amd64: GOARCH=amd64
+build-darwin-amd64:
+	@echo "+ $@"
+	$(BUILD)
