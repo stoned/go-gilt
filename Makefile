@@ -47,7 +47,7 @@ fmt:
 
 fmtcheck:
 	@echo "+ $@"
-	@bash -c "diff -u <(echo -n) <(gofmt -d .)"
+	@$(CRUN) gofmt -d .
 
 lint:
 	@echo "+ $@"
