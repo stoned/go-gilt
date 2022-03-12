@@ -33,14 +33,14 @@ func CreateTempDirectory() string {
 		panic(err)
 	}
 
-	fmt.Println(fmt.Sprintf("Created temporary directory: '%s'.", dir))
+	fmt.Printf("Created temporary directory: '%s'.\n", dir)
 
 	return dir
 }
 
 // RemoveTempDirectory removes the temp directory created for tests.
 func RemoveTempDirectory(dir string) {
-	fmt.Println(fmt.Sprintf("Removed temporary directory: '%s'.", dir))
+	fmt.Printf("Removed temporary directory: '%s'.\n", dir)
 
 	os.RemoveAll(dir)
 }

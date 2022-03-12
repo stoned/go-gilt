@@ -89,7 +89,7 @@ func RunCmd(debug bool, name string, args ...string) error {
 	}
 
 	if err := cmd.Run(); err != nil {
-		return errors.New(string(stderr.Bytes()))
+		return errors.New(stderr.String())
 	}
 
 	return nil

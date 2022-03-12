@@ -114,7 +114,8 @@ func (suite *RepositoriesTestSuite) TestUnmarshalYAMLFileReturnsErrorWithMissing
 
 func (suite *RepositoriesTestSuite) TestUnmarshalYAMLFile() {
 	suite.r.Filename = path.Join("..", "test", "gilt.yml")
-	suite.r.UnmarshalYAMLFile()
+	err := suite.r.UnmarshalYAMLFile()
+	assert.NoError(suite.T(), err)
 
 	firstItem := suite.r.Items[0]
 	assert.NotNil(suite.T(), firstItem.Git)
@@ -141,7 +142,8 @@ func (suite *RepositoriesTestSuite) TestOverlayFailsCloneReturnsError() {
   version: abc1234
   dstDir: path/user.repo
 `
-	suite.r.UnmarshalYAML([]byte(data))
+	err := suite.r.UnmarshalYAML([]byte(data))
+	assert.NoError(suite.T(), err)
 	anon := func() error {
 		err := suite.r.Overlay()
 		assert.Error(suite.T(), err)
@@ -159,7 +161,9 @@ func (suite *RepositoriesTestSuite) TestOverlayFailsCheckoutIndexReturnsError() 
   version: abc1234
   dstDir: /invalid/directory
 `
-	suite.r.UnmarshalYAML([]byte(data))
+	err := suite.r.UnmarshalYAML([]byte(data))
+	assert.NoError(suite.T(), err)
+
 	anon := func() error {
 		err := suite.r.Overlay()
 		assert.Error(suite.T(), err)
@@ -182,7 +186,9 @@ func (suite *RepositoriesTestSuite) TestOverlay() {
     - src: foo
       dstFile: bar
 `
-	suite.r.UnmarshalYAML([]byte(data))
+	err := suite.r.UnmarshalYAML([]byte(data))
+	assert.NoError(suite.T(), err)
+
 	anon := func() error {
 		err := suite.r.Overlay()
 		assert.NoError(suite.T(), err)
