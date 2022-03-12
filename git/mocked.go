@@ -55,7 +55,7 @@ func MockRunCommandImpl(errString string, f func() error) []string {
 	}
 	defer func() { RunCommand = originalRunCommand }()
 
-	f()
+	f() //nolint:errcheck
 
 	return got
 }

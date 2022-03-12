@@ -57,10 +57,11 @@ func (suite *GitTestSuite) TearDownTest() {
 func (suite *GitTestSuite) TestCloneAlreadyExists() {
 	cloneDir := filepath.Join(suite.r.GiltDir, "https---example.com-user-repo.git-abc1234")
 	if _, err := os.Stat(cloneDir); os.IsNotExist(err) {
-		os.Mkdir(cloneDir, 0755)
+		err := os.Mkdir(cloneDir, 0755)
+		assert.NoError(suite.T(), err)
 	}
 
-	suite.g.Clone(suite.r)
+	suite.g.Clone(suite.r) //nolint:errcheck
 
 	defer os.RemoveAll(cloneDir)
 }
