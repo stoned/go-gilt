@@ -29,7 +29,7 @@ define CRUN
 		$(IMAGE)
 endef
 
-test: fmtcheck lint vet bats
+test: lint bats
 	@echo "+ $@"
 	@$(CRUN) go test -tags=integration -parallel 5 -covermode=count ./...
 
@@ -46,18 +46,10 @@ fmt:
 	@echo "+ $@"
 	@$(CRUN) gofmt -s -l -w .
 
-fmtcheck:
-	@echo "+ $@"
-	@$(CRUN) gofmt -d .
-
 lint: IMAGE=$(GOLANGCI_LINT_IMAGE)
 lint:
 	@echo "+ $@"
 	@$(CRUN) golangci-lint run -v
-
-vet:
-	@echo "+ $@"
-	@$(CRUN) go vet ./...
 
 clean:
 	@echo "+ $@"
