@@ -58,7 +58,7 @@ func newGiltDir() error {
 	repositories.GiltDir = cacheGiltDir
 
 	if _, err := os.Stat(cacheGiltDir); os.IsNotExist(err) {
-		if err := os.Mkdir(cacheGiltDir, 0755); err != nil {
+		if err := os.MkdirAll(cacheGiltDir, 0755); err != nil {
 			return err
 		}
 	}
