@@ -21,7 +21,7 @@ BUILDDIR := .build
 IMAGE= $(GO_IMAGE)
 DOCKER_ONLY_RUN_ARGS= $(if $(findstring docker,$(CONTAINER_ENGINE)),--user $$(id -u))
 define CRUN
-	$(CONTAINER_ENGINE) run --rm -it \
+	$(CONTAINER_ENGINE) run --rm -i \
 		$(DOCKER_ONLY_RUN_ARGS) \
 		-v $(CURDIR):/usr/src/go-gilt:z \
 		-w /usr/src/go-gilt \
