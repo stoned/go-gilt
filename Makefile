@@ -29,7 +29,9 @@ define CRUN
 		$(IMAGE)
 endef
 
-test: lint bats
+test: lint go-test bats
+
+go-test:
 	@echo "+ $@"
 	@$(CRUN) go test -tags=integration -parallel 5 -covermode=count ./...
 
