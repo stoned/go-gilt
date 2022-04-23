@@ -35,12 +35,14 @@ func MockRunCommandImpl(errString string, f func() error) []string {
 	var got []string
 
 	originalRunCommand := RunCommand
-	RunCommand = func(debug bool, name string, args ...string) error {
+	RunCommand = func(debug bool, dir string, name string, args ...string) error {
 		cmd := exec.Command(name, args...)
+		cmd.Dir = dir
 		cmdString := strings.Join(cmd.Args, " ")
 
 		if errString == "" {
 			got = append(got, cmdString)
+			got = append(got, dir)
 			return nil
 		}
 

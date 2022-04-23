@@ -73,16 +73,24 @@ func ExpandUser(path string) (string, error) {
 
 // RunCmd execute the provided command with args.
 // Yeah, yeah, yeah, I know I cheated by using Exec in this package.
-func RunCmd(debug bool, name string, args ...string) error {
+func RunCmd(debug bool, dir string, name string, args ...string) error {
 	var stderr bytes.Buffer
 	cmd := exec.Command(name, args...)
+	cmd.Dir = dir
 
 	if debug {
 		cmd.Stdout = os.Stdout
 		cmd.Stderr = os.Stderr
 
+		var wdMessage string
+		if dir == "" {
+			wdMessage = ""
+		} else {
+			wdMessage = fmt.Sprintf(" in working directory '%s'", dir)
+		}
+
 		commands := strings.Join(cmd.Args, " ")
-		msg := fmt.Sprintf("COMMAND: %s", aurora.Colorize(commands, aurora.BlackFg|aurora.RedBg))
+		msg := fmt.Sprintf("COMMAND%s: %s", wdMessage, aurora.Colorize(commands, aurora.BlackFg|aurora.RedBg))
 		fmt.Println(msg)
 	} else {
 		cmd.Stderr = &stderr

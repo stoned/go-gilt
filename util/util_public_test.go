@@ -66,15 +66,21 @@ func TestExpandUserWithFullPath(t *testing.T) {
 	assert.NoError(t, err)
 }
 
+func TestRunCommandWithDirectory(t *testing.T) {
+	err := util.RunCmd(false, ".", "pwd")
+
+	assert.NoError(t, err)
+}
+
 func TestRunCommandReturnsError(t *testing.T) {
-	err := util.RunCmd(false, "false")
+	err := util.RunCmd(false, "", "false")
 
 	assert.Error(t, err)
 }
 
 func TestRunCommandPrintsStreamingStdout(t *testing.T) {
 	got := capturer.CaptureStdout(func() {
-		err := util.RunCmd(true, "echo", "-n", "foo")
+		err := util.RunCmd(true, "", "echo", "-n", "foo")
 		assert.NoError(t, err)
 	})
 	want := "COMMAND: \x1b[30;41mecho -n foo\x1b[0m\nfoo"
@@ -84,7 +90,7 @@ func TestRunCommandPrintsStreamingStdout(t *testing.T) {
 
 func TestRunCommandPrintsStreamingStderr(t *testing.T) {
 	got := capturer.CaptureStderr(func() {
-		err := util.RunCmd(true, "cat", "foo")
+		err := util.RunCmd(true, "", "cat", "foo")
 		assert.Error(t, err)
 	})
 	want := "cat: foo: No such file or directory\n"
