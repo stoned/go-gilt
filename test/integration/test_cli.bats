@@ -23,8 +23,9 @@ GILT_TEST_BASE_DIR=test/integration/tmp
 GILT_LIBRARY_DIR=${GILT_TEST_BASE_DIR}/library
 GILT_ROLES_DIR=${GILT_TEST_BASE_DIR}/roles
 GILT_TEST_DIR=${GILT_TEST_BASE_DIR}/tests
-GILT_PROGRAM="../../../main.go"
 GILT_DIR=~/.gilt/clone
+
+: ${GO_GILT_CMD:=go-gilt}
 
 setup() {
 	GILT_CLONED_REPO_1=${GILT_DIR}/cache/https---github.com-retr0h-ansible-etcd.git-77a95b7
@@ -48,14 +49,14 @@ teardown() {
 }
 
 @test "invoke gilt without arguments prints usage" {
-	run go run main.go
+	run ${GO_GILT_CMD}
 
 	[ "$status" -eq 0 ]
 	echo "${output}" | grep "GIT layering command line tool."
 }
 
 @test "invoke gilt version subcommand" {
-	run go run main.go version
+	run ${GO_GILT_CMD} version
 
 	[ "$status" -eq 0 ]
 	echo "${output}" | grep "Date:"
@@ -65,40 +66,41 @@ teardown() {
 }
 
 @test "invoke gilt overlay subcommand" {
-	run bash -c "cd ${GILT_TEST_BASE_DIR}; go run ${GILT_PROGRAM} --giltdir ${GILT_DIR} overlay"
+	run bash -c "cd ${GILT_TEST_BASE_DIR}; ${GO_GILT_CMD} --giltdir ${GILT_DIR} overlay"
 
 	[ "$status" -eq 0 ]
 }
 
 @test "invoke gilt overlay subcommand with filename flag" {
-	run bash -c "cd ${GILT_TEST_BASE_DIR}; go run ${GILT_PROGRAM} --giltdir ${GILT_DIR} overlay --filename gilt.yml"
+	run bash -c "cd ${GILT_TEST_BASE_DIR}; ${GO_GILT_CMD} --giltdir ${GILT_DIR} overlay --filename gilt.yml"
 
 	[ "$status" -eq 0 ]
 }
 
 @test "invoke gilt overlay subcommand with f flag" {
-	run bash -c "cd ${GILT_TEST_BASE_DIR}; go run ${GILT_PROGRAM} --giltdir ${GILT_DIR} overlay -f gilt.yml"
+	run bash -c "cd ${GILT_TEST_BASE_DIR}; ${GO_GILT_CMD} --giltdir ${GILT_DIR} overlay -f gilt.yml"
 
 	[ "$status" -eq 0 ]
 }
 
 @test "invoke gilt overlay subcommand with debug flag" {
-	run bash -c "cd ${GILT_TEST_BASE_DIR}; go run ${GILT_PROGRAM} --giltdir ${GILT_DIR} --debug overlay"
+	run bash -c "cd ${GILT_TEST_BASE_DIR}; ${GO_GILT_CMD} --giltdir ${GILT_DIR} --debug overlay"
 
 	[ "$status" -eq 0 ]
 	echo "${output}" | grep "[https://github.com/retr0h/ansible-etcd.git@77a95b7]"
 	echo "${output}" | grep -E ".*Cloning to.*https---github.com-retr0h-ansible-etcd.git-77a95b7"
+	echo "${output}" | grep -E ".*in working directory '${GILT_DIR}"
 }
 
 @test "invoke gilt overlay when already cloned" {
-	run bash -c "cd ${GILT_TEST_BASE_DIR}; go run ${GILT_PROGRAM} --giltdir ${GILT_DIR} overlay"
-	run bash -c "cd ${GILT_TEST_BASE_DIR}; go run ${GILT_PROGRAM} --giltdir ${GILT_DIR} overlay"
+	run bash -c "cd ${GILT_TEST_BASE_DIR}; ${GO_GILT_CMD} --giltdir ${GILT_DIR} overlay"
+	run bash -c "cd ${GILT_TEST_BASE_DIR}; ${GO_GILT_CMD} --giltdir ${GILT_DIR} overlay"
 
 	echo "${output}" | grep "Clone already exists"
 }
 
 @test "invoke gilt overlay and clone" {
-	run bash -c "cd ${GILT_TEST_BASE_DIR}; go run ${GILT_PROGRAM} --giltdir ${GILT_DIR} overlay"
+	run bash -c "cd ${GILT_TEST_BASE_DIR}; ${GO_GILT_CMD} --giltdir ${GILT_DIR} overlay"
 
 	run stat ${GILT_CLONED_REPO_1}
 	[ "$status" = 0 ]
@@ -108,14 +110,14 @@ teardown() {
 }
 
 @test "invoke gilt overlay and checkout index" {
-	run bash -c "cd ${GILT_TEST_BASE_DIR}; go run ${GILT_PROGRAM} --giltdir ${GILT_DIR} overlay"
+	run bash -c "cd ${GILT_TEST_BASE_DIR}; ${GO_GILT_CMD} --giltdir ${GILT_DIR} overlay"
 
 	run stat ${GILT_CLONED_REPO_1_DST_DIR}
 	[ "$status" = 0 ]
 }
 
 @test "invoke gilt overlay and copy sources" {
-	run bash -c "cd ${GILT_TEST_BASE_DIR}; go run ${GILT_PROGRAM} --giltdir ${GILT_DIR} overlay"
+	run bash -c "cd ${GILT_TEST_BASE_DIR}; ${GO_GILT_CMD} --giltdir ${GILT_DIR} overlay"
 
 	# Copy src file matched by regexp to dst dir.
 	run stat ${GILT_LIBRARY_DIR}/cinder_manage

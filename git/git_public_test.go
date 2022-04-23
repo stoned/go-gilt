@@ -100,7 +100,9 @@ func (suite *GitTestSuite) TestClone() {
 	want := []string{
 		fmt.Sprintf("git clone https://example.com/user/repo.git %s/https---example.com-user-repo.git-abc1234",
 			suite.r.GiltDir),
-		fmt.Sprintf("git -C %s/https---example.com-user-repo.git-abc1234 reset --hard abc1234",
+		"",
+		"git reset --hard abc1234",
+		fmt.Sprintf("%s/https---example.com-user-repo.git-abc1234",
 			suite.r.GiltDir),
 	}
 
@@ -140,8 +142,10 @@ func (suite *GitTestSuite) TestCheckoutIndex() {
 	dstDir, _ := git.FilePathAbs(suite.r.DstDir)
 	got := git.MockRunCommand(anon)
 	want := []string{
-		fmt.Sprintf("git -C %s/https---example.com-user-repo.git-abc1234 checkout-index --force --all --prefix %s",
-			suite.r.GiltDir, (dstDir + string(os.PathSeparator))),
+		fmt.Sprintf("git checkout-index --force --all --prefix %s",
+			(dstDir + string(os.PathSeparator))),
+		fmt.Sprintf("%s/https---example.com-user-repo.git-abc1234",
+			suite.r.GiltDir),
 	}
 
 	assert.Equal(suite.T(), want, got)

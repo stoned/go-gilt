@@ -77,14 +77,14 @@ func (g *Git) Clone(repository repository.Repository) error {
 
 func (g *Git) clone(repository repository.Repository) error {
 	cloneDir := repository.GetCloneDir()
-	err := RunCommand(g.Debug, "git", "clone", repository.Git, cloneDir)
+	err := RunCommand(g.Debug, "", "git", "clone", repository.Git, cloneDir)
 
 	return err
 }
 
 func (g *Git) reset(repository repository.Repository) error {
 	cloneDir := repository.GetCloneDir()
-	err := RunCommand(g.Debug, "git", "-C", cloneDir, "reset", "--hard", repository.Version)
+	err := RunCommand(g.Debug, cloneDir, "git", "reset", "--hard", repository.Version)
 
 	return err
 }
@@ -101,8 +101,6 @@ func (g *Git) CheckoutIndex(repository repository.Repository) error {
 	fmt.Println(msg)
 
 	cmdArgs := []string{
-		"-C",
-		cloneDir,
 		"checkout-index",
 		"--force",
 		"--all",
@@ -110,7 +108,7 @@ func (g *Git) CheckoutIndex(repository repository.Repository) error {
 		// Trailing separator needed by git checkout-index.
 		dstDir + string(os.PathSeparator),
 	}
-	if err := RunCommand(g.Debug, "git", cmdArgs...); err != nil {
+	if err := RunCommand(g.Debug, cloneDir, "git", cmdArgs...); err != nil {
 		return err
 	}
 

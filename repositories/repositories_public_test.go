@@ -201,13 +201,23 @@ func (suite *RepositoriesTestSuite) TestOverlay() {
 	want := []string{
 		fmt.Sprintf("git clone https://example.com/user/repo1.git %s/https---example.com-user-repo1.git-abc1234",
 			repositories.GiltDir),
-		fmt.Sprintf("git -C %s/https---example.com-user-repo1.git-abc1234 reset --hard abc1234",
+		"",
+
+		"git reset --hard abc1234",
+		fmt.Sprintf("%s/https---example.com-user-repo1.git-abc1234",
 			repositories.GiltDir),
-		fmt.Sprintf("git -C %s/https---example.com-user-repo1.git-abc1234 checkout-index --force --all --prefix %s",
-			repositories.GiltDir, (dstDir + string(os.PathSeparator))),
+
+		fmt.Sprintf("git checkout-index --force --all --prefix %s",
+			(dstDir + string(os.PathSeparator))),
+		fmt.Sprintf("%s/https---example.com-user-repo1.git-abc1234",
+			repositories.GiltDir),
+
 		fmt.Sprintf("git clone https://example.com/user/repo2.git %s/https---example.com-user-repo2.git-abc1234",
 			repositories.GiltDir),
-		fmt.Sprintf("git -C %s/https---example.com-user-repo2.git-abc1234 reset --hard abc1234",
+		"",
+
+		"git reset --hard abc1234",
+		fmt.Sprintf("%s/https---example.com-user-repo2.git-abc1234",
 			repositories.GiltDir),
 	}
 
