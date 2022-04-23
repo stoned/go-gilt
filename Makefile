@@ -1,6 +1,6 @@
 CMD := go-gilt
-GO_IMAGE ?= golang:1.17
-GOLANGCI_LINT_IMAGE ?= golangci/golangci-lint:v1.45.2
+GO_IMAGE ?= docker.io/golang:1.17
+GOLANGCI_LINT_IMAGE ?= docker.io/golangci/golangci-lint:v1.45.2
 CONTAINER_ENGINE ?= docker
 GITCOMMIT ?= $(shell git rev-parse --short HEAD)
 $(if $(GITCOMMIT), , $(error "git rev-parse failed"))
