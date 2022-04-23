@@ -69,7 +69,7 @@ clean:
 	@rm -rf $(BUILDDIR)
 
 define BUILD
-	@$(CRUN) $(GO_IMAGE) go build -ldflags="$(LDFLAGS)" -o "$(BUILDDIR)/$(CMD)_$(GOOS)_$(GOARCH)"
+	@$(CRUN) --env GOOS=$(GOOS) --env GOARCH=$(GOARCH) $(GO_IMAGE) go build -ldflags="$(LDFLAGS)" -o "$(BUILDDIR)/$(CMD)_$(GOOS)_$(GOARCH)"
 endef
 
 build: clean $(BUILDDIR)/$(CMD)_linux_amd64 $(BUILDDIR)/$(CMD)_darwin_amd64 $(BUILDDIR)/$(CMD)_windows_amd64
