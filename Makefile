@@ -72,7 +72,7 @@ define BUILD
 	@$(CRUN) $(GO_IMAGE) go build -ldflags="$(LDFLAGS)" -o "$(BUILDDIR)/$(CMD)_$(GOOS)_$(GOARCH)"
 endef
 
-build: clean $(BUILDDIR)/$(CMD)_linux_amd64 $(BUILDDIR)/$(CMD)_darwin_amd64
+build: clean $(BUILDDIR)/$(CMD)_linux_amd64 $(BUILDDIR)/$(CMD)_darwin_amd64 $(BUILDDIR)/$(CMD)_windows_amd64
 
 $(BUILDDIR)/$(CMD)_linux_amd64: GOOS=linux
 $(BUILDDIR)/$(CMD)_linux_amd64: GOARCH=amd64
@@ -83,5 +83,11 @@ $(BUILDDIR)/$(CMD)_linux_amd64:
 $(BUILDDIR)/$(CMD)_darwin_amd64: GOOS=darwin
 $(BUILDDIR)/$(CMD)_darwin_amd64: GOARCH=amd64
 $(BUILDDIR)/$(CMD)_darwin_amd64:
+	@echo "+ $@"
+	$(BUILD)
+
+$(BUILDDIR)/$(CMD)_windows_amd64: GOOS=windows
+$(BUILDDIR)/$(CMD)_windows_amd64: GOARCH=amd64
+$(BUILDDIR)/$(CMD)_windows_amd64:
 	@echo "+ $@"
 	$(BUILD)
