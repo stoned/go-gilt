@@ -1,5 +1,7 @@
 module github.com/retr0h/go-gilt
 
+go 1.17
+
 require (
 	github.com/davecgh/go-spew v1.1.0
 	github.com/ghodss/yaml v1.0.0
@@ -13,7 +15,10 @@ require (
 	github.com/xeipuuv/gojsonpointer v0.0.0-20170225233418-6fe8760cad35
 	github.com/xeipuuv/gojsonreference v0.0.0-20150808065054-e02fc20de94c
 	github.com/xeipuuv/gojsonschema v0.0.0-20171230112544-511d08a359d1
+	gopkg.in/yaml.v2 v2.0.0
+)
+
+require (
 	golang.org/x/lint v0.0.0-20181011164241-5906bd5c48cd // indirect
 	golang.org/x/tools v0.0.0-20181018182439-def26773749b // indirect
-	gopkg.in/yaml.v2 v2.0.0
 )
